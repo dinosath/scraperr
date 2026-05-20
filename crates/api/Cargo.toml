@@ -1,0 +1,40 @@
+[package]
+name = "scraperr-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+scraperr-db = { path = "../db" }
+scraperr-core = { path = "../core" }
+scraperr-migration = { path = "../migration" }
+scraperr-worker = { path = "../worker" }
+
+axum = { workspace = true }
+axum-extra = { workspace = true }
+sea-orm = { workspace = true }
+sea-orm-migration = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+jsonwebtoken = { workspace = true }
+reqwest = { workspace = true }
+tonic = { workspace = true }
+prost = { workspace = true }
+prost-types = { workspace = true }
+tokio-stream = { workspace = true }
+tonic-health = { workspace = true }
+tonic-prost = { workspace = true }
+
+[dependencies.async-trait]
+workspace = true
+
+[build-dependencies]
+tonic-prost-build = { workspace = true }

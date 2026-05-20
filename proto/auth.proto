@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package scraperr.auth;
+
+service AuthService {
+  rpc GetMe (GetMeRequest) returns (UserResponse);
+  rpc CheckAuth (CheckAuthRequest) returns (CheckAuthResponse);
+}
+
+message GetMeRequest {}
+
+message UserResponse {
+  string email = 1;
+  optional string full_name = 2;
+}
+
+message CheckAuthRequest {}
+
+message CheckAuthResponse {
+  bool registration_enabled = 1;
+  bool recordings_enabled = 2;
+}

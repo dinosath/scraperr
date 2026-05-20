@@ -1,0 +1,22 @@
+[package]
+name = "scraperr-worker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+scraperr-db = { path = "../db" }
+scraperr-core = { path = "../core" }
+
+tokio = { workspace = true }
+sea-orm = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+scraper = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+tokio-cron-scheduler = "0.15"
+url = "2"

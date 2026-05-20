@@ -1,0 +1,79 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: scraperr
+      POSTGRES_PASSWORD: scraperr
+      POSTGRES_DB: scraperr
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scraperr"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/scraperr
+      KC_DB_USERNAME: scraperr
+      KC_DB_PASSWORD: scraperr
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    environment:
+      DATABASE_URL: postgres://scraperr:scraperr@db:5432/scraperr
+      API_HOST: "0.0.0.0"
+      API_PORT: "8080"
+      OIDC_ISSUER_URL: http://keycloak:8080/realms/scraperr
+      OIDC_AUDIENCE: scraperr-api
+      REGISTRATION_ENABLED: "true"
+      RECORDINGS_ENABLED: "true"
+      GRPC_PORT: "50051"
+      RUST_LOG: info
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.worker
+    environment:
+      DATABASE_URL: postgres://scraperr:scraperr@db:5432/scraperr
+      WORKER_POLL_INTERVAL_SECS: "5"
+      RUST_LOG: info
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

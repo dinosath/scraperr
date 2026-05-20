@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package scraperr.jobs;
+
+import "google/protobuf/timestamp.proto";
+
+service JobService {
+  rpc SubmitJob (SubmitJobRequest) returns (SubmitJobResponse);
+  rpc GetJob (GetJobRequest) returns (JobResponse);
+  rpc ListJobs (ListJobsRequest) returns (ListJobsResponse);
+  rpc DeleteJobs (DeleteJobsRequest) returns (DeleteJobsResponse);
+  rpc UpdateJobs (UpdateJobsRequest) returns (UpdateJobsResponse);
+  rpc StreamJobStatus (GetJobRequest) returns (stream JobStatusUpdate);
+}
+
+message SubmitJobRequest {
+  string url = 1;
+  string elements_json = 2;
+  string job_options_json = 3;
+  bool agent_mode = 4;
+  optional string prompt = 5;
+  optional string id = 6;
+}
+
+message SubmitJobResponse {
+  string id = 1;
+  string message = 2;
+}
+
+message GetJobRequest {
+  string id = 1;
+}
+
+message ListJobsRequest {}
+
+message JobResponse {
+  string id = 1;
+  string url = 2;
+  string elements_json = 3;
+  string status = 4;
+  string result_json = 5;
+  google.protobuf.Timestamp time_created = 6;
+  bool agent_mode = 7;
+  optional string prompt = 8;
+  bool favorite = 9;
+}
+
+message ListJobsResponse {
+  repeated JobResponse jobs = 1;
+}
+
+message DeleteJobsRequest {
+  repeated string ids = 1;
+}
+
+message DeleteJobsResponse {
+  string message = 1;
+}
+
+message UpdateJobsRequest {
+  repeated string ids = 1;
+  string field = 2;
+  string value_json = 3;
+}
+
+message UpdateJobsResponse {
+  string message = 1;
+}
+
+message JobStatusUpdate {
+  string id = 1;
+  string status = 2;
+  optional string result_json = 3;
+}
